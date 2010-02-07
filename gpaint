@@ -1,0 +1,113 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
+import gtk
+import sys
+
+class MyApp(object):
+  # The Pixmap for the image data
+  pixmap = None
+
+  def __init__(self):
+    self.builder = gtk.Builder()
+    self.builder.add_from_file("gpaint.glade")
+    self.builder.connect_signals(self)
+    mw = self.builder.get_object("MainWindow")
+    mw.show()
+
+  def run(self):
+    try:
+      gtk.main()
+    except KeyboardInterrupt:
+      pass
+
+  def quit(self):
+    gtk.main_quit()
+
+
+  # Drawing functions:
+  def draw_brush(self, widget, x, y):
+    rect = (int(x-1), int(y-1), 2, 2)
+    self.pixmap.draw_rectangle(widget.get_style().black_gc, True,
+                               rect[0], rect[1], rect[2], rect[3])
+    widget.queue_draw_area(rect[0], rect[1], rect[2], rect[3])
+
+
+  # Callback functions:
+  def on_window1_delete_event(self, *args):
+    self.quit()
+
+  def on_ButtonNew_clicked(self, *args):
+    pass
+
+  def on_ButtonOpen_clicked(self, *args):
+    open = self.builder.get_object("FileChooserOpen")
+    open.run()
+    open.hide()
+
+  def on_ButtonSave_clicked(self, *args):
+    pass
+
+  def on_ButtonPrint_clicked(self, *args):
+    pass
+
+  def on_ButtonUndo_clicked(self, *args):
+    pass
+
+  def on_ButtonRedo_clicked(self, *args):
+    pass
+
+  def on_ButtonCut_clicked(self, *args):
+    pass
+
+  def on_ButtonCopy_clicked(self, *args):
+    pass
+
+  def on_ButtonPaste_clicked(self, *args):
+    pass
+
+  def on_MenuAbout_activate(self, *args):
+    about = self.builder.get_object("DialogAbout")
+    about.run()
+    about.hide()
+
+  def on_DrawingArea_configure_event(self, widget, data):
+    print >>sys.stderr, "configure"
+    x, y, width, height = widget.get_allocation()
+    
+    self.pixmap = gtk.gdk.Pixmap(widget.window, width, height)
+    self.pixmap.draw_rectangle(widget.get_style().white_gc,
+                               True, 0, 0, width, height)
+    return True
+
+  def on_DrawingArea_expose_event(self, widget, data):
+    print >>sys.stderr, "expose"
+    x, y, width, height = data.area
+    widget.window.draw_drawable(widget.get_style().fg_gc[gtk.STATE_NORMAL],
+                              self.pixmap, x, y, x, y, width, height)
+    return False
+
+  def on_DrawingArea_motion_notify_event(self, widget, data):
+    print >>sys.stderr, "motion notify"
+    if data.is_hint:
+      x, y, state = data.window.get_pointer()
+    else:
+      x = data.x
+      y = data.y
+      state = data.state
+
+    if state & gtk.gdk.BUTTON1_MASK and self.pixmap != None:
+        self.draw_brush(widget, x, y)
+
+    return True
+
+  def on_DrawingArea_button_press_event(self, widget, data):
+    print >>sys.stderr, "button press"
+    if data.button == 1 and self.pixmap != None:
+      self.draw_brush(widget, data.x, data.y)
+    return True
+
+if __name__ == '__main__':
+    app = MyApp()
+    app.run()
+
