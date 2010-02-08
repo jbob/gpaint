@@ -273,11 +273,11 @@
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkToolButton" id="ButtonPickColor">
+                  <object class="GtkToolButton" id="ButtonDraw">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Pick color</property>
+                    <property name="label" translatable="yes">Draw</property>
                     <property name="use_underline">True</property>
-                    <property name="stock_id">gtk-color-picker</property>
+                    <property name="stock_id">gtk-edit</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -285,11 +285,16 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToolButton" id="ButtonDraw">
+                  <object class="GtkToolItem" id="Color">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Draw</property>
-                    <property name="use_underline">True</property>
-                    <property name="stock_id">gtk-edit</property>
+                    <child>
+                      <object class="GtkColorButton" id="ColorButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="color">#000000000000</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>

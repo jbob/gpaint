@@ -28,8 +28,11 @@ class MyApp(object):
   # Drawing functions:
   def draw_brush(self, widget, x, y):
     rect = (int(x-1), int(y-1), 2, 2)
-    self.pixmap.draw_rectangle(widget.get_style().black_gc, True,
-                               rect[0], rect[1], rect[2], rect[3])
+    gc = widget.window.new_gc()
+    c = self.builder.get_object("ColorButton").get_color()
+    color = gc.get_colormap().alloc_color(c)
+    gc.set_foreground(color)
+    self.pixmap.draw_rectangle(gc, True, rect[0], rect[1], rect[2], rect[3])
     widget.queue_draw_area(rect[0], rect[1], rect[2], rect[3])
 
 
