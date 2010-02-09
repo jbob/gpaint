@@ -7,6 +7,10 @@ import sys
 class MyApp(object):
   # The Pixmap for the image data
   pixmap = None
+  gc = None
+  lastx = None
+  lasty = None
+
 
   def __init__(self):
     self.builder = gtk.Builder()
@@ -27,13 +31,19 @@ class MyApp(object):
 
   # Drawing functions:
   def draw_brush(self, widget, x, y):
-    rect = (int(x-1), int(y-1), 2, 2)
-    gc = widget.window.new_gc()
-    c = self.builder.get_object("ColorButton").get_color()
-    color = gc.get_colormap().alloc_color(c)
-    gc.set_foreground(color)
-    self.pixmap.draw_rectangle(gc, True, rect[0], rect[1], rect[2], rect[3])
-    widget.queue_draw_area(rect[0], rect[1], rect[2], rect[3])
+    if(self.lastx == None):
+      self.lastx = x
+    if(self.lasty == None):
+      self.lasty = y
+    rect = (int(x), int(y), 1, 1)
+    self.pixmap.draw_rectangle(self.gc, True, rect[0], rect[1],
+                               rect[2], rect[3])
+    if(self.lastx != x or self.lasty != y):
+      self.pixmap.draw_line(self.gc, self.lastx, self.lasty, x, y)
+
+    widget.queue_draw_area(0,0,self.width ,self.height)
+    self.lastx = x
+    self.lasty = y
 
 
   # Callback functions:
@@ -74,24 +84,28 @@ class MyApp(object):
     about.run()
     about.hide()
 
-  def on_DrawingArea_configure_event(self, widget, data):
-    print >>sys.stderr, "configure"
-    x, y, width, height = widget.get_allocation()
+  def on_ColorButton_color_set(self, widget):
+    c = widget.get_color()
+    color = self.gc.get_colormap().alloc_color(c)
+    self.gc.set_foreground(color)
     
-    self.pixmap = gtk.gdk.Pixmap(widget.window, width, height)
+
+  def on_DrawingArea_configure_event(self, widget, data):
+    x, y, self.width, self.height = widget.get_allocation()
+    self.gc = widget.window.new_gc()
+    
+    self.pixmap = gtk.gdk.Pixmap(widget.window, self.width, self.height)
     self.pixmap.draw_rectangle(widget.get_style().white_gc,
-                               True, 0, 0, width, height)
+                               True, 0, 0, self.width, self.height)
     return True
 
   def on_DrawingArea_expose_event(self, widget, data):
-    print >>sys.stderr, "expose"
     x, y, width, height = data.area
     widget.window.draw_drawable(widget.get_style().fg_gc[gtk.STATE_NORMAL],
                               self.pixmap, x, y, x, y, width, height)
     return False
 
   def on_DrawingArea_motion_notify_event(self, widget, data):
-    print >>sys.stderr, "motion notify"
     if data.is_hint:
       x, y, state = data.window.get_pointer()
     else:
@@ -100,14 +114,20 @@ class MyApp(object):
       state = data.state
 
     if state & gtk.gdk.BUTTON1_MASK and self.pixmap != None:
-        self.draw_brush(widget, x, y)
+      self.draw_brush(widget, x, y)
 
     return True
 
   def on_DrawingArea_button_press_event(self, widget, data):
-    print >>sys.stderr, "button press"
     if data.button == 1 and self.pixmap != None:
-      self.draw_brush(widget, data.x, data.y)
+      self.draw_brush(widget, int(data.x), int(data.y))
+    return True
+
+  def on_DrawingArea_button_release_event(self, widget, data):
+    print self.lastx, self.lasty
+    self.lastx = None
+    self.lasty = None
+    print self.lastx, self.lasty
     return True
 
 if __name__ == '__main__':
