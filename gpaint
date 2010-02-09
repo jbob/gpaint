@@ -124,10 +124,8 @@ class MyApp(object):
     return True
 
   def on_DrawingArea_button_release_event(self, widget, data):
-    print self.lastx, self.lasty
     self.lastx = None
     self.lasty = None
-    print self.lastx, self.lasty
     return True
 
 if __name__ == '__main__':
