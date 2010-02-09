@@ -120,12 +120,9 @@ class MyApp(object):
 
   def on_DrawingArea_button_press_event(self, widget, data):
     if data.button == 1 and self.pixmap != None:
+      self.lastx = None
+      self.lasty = None
       self.draw_brush(widget, int(data.x), int(data.y))
-    return True
-
-  def on_DrawingArea_button_release_event(self, widget, data):
-    self.lastx = None
-    self.lasty = None
     return True
 
 if __name__ == '__main__':
