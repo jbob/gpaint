@@ -59,7 +59,14 @@ class MyApp(object):
     button = self.builder.get_object("FCButtonOK")
     button.set_label("Open")
     open.run()
+    filename = open.get_filename()
     open.hide()
+    if filename != None:
+      pb = gtk.gdk.pixbuf_new_from_file(filename)
+      self.pixmap.draw_pixbuf(self.gc, pb, 0, 0, 0, 0, -1, -1)
+      da = self.builder.get_object("DrawingArea")
+      da.queue_draw_area(0,0,self.width ,self.height)
+
 
   def on_ButtonSave_clicked(self, *args):
     save = self.builder.get_object("FileChooser")
@@ -67,12 +74,14 @@ class MyApp(object):
     button = self.builder.get_object("FCButtonOK")
     button.set_label("Save")
     save.run()
+    filename = save.get_filename()
     save.hide()
-    pb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, has_alpha=False,
+    if filename != None:
+      pb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, has_alpha=False,
                         bits_per_sample=8, width=self.width, height=self.height)
-    pb.get_from_drawable(self.pixmap, self.pixmap.get_colormap(),
+      pb.get_from_drawable(self.pixmap, self.pixmap.get_colormap(),
                          0, 0, 0, 0, -1, -1)
-    pb.save(save.get_filename(),"png")
+      pb.save(filename,"png")
 
   def on_ButtonPrint_clicked(self, *args):
     pass
