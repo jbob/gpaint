@@ -1037,7 +1037,7 @@ Public License instead of this License.  But first, please read
       </object>
     </child>
   </object>
-  <object class="GtkFileChooserDialog" id="FileChooserOpen">
+  <object class="GtkFileChooserDialog" id="FileChooser">
     <property name="border_width">5</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
@@ -1054,8 +1054,8 @@ Public License instead of this License.  But first, please read
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="button2">
-                <property name="label" translatable="yes">button</property>
+              <object class="GtkButton" id="FCButtonCancel">
+                <property name="label" translatable="yes">Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1067,8 +1067,7 @@ Public License instead of this License.  But first, please read
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button1">
-                <property name="label" translatable="yes">button</property>
+              <object class="GtkButton" id="FCButtonOK">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1089,8 +1088,8 @@ Public License instead of this License.  But first, please read
       </object>
     </child>
     <action-widgets>
-      <action-widget response="0">button2</action-widget>
-      <action-widget response="0">button1</action-widget>
+      <action-widget response="0">FCButtonCancel</action-widget>
+      <action-widget response="0">FCButtonOK</action-widget>
     </action-widgets>
   </object>
 </interface>

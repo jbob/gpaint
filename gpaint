@@ -54,12 +54,25 @@ class MyApp(object):
     pass
 
   def on_ButtonOpen_clicked(self, *args):
-    open = self.builder.get_object("FileChooserOpen")
+    open = self.builder.get_object("FileChooser")
+    open.set_action(gtk.FILE_CHOOSER_ACTION_OPEN)
+    button = self.builder.get_object("FCButtonOK")
+    button.set_label("Open")
     open.run()
     open.hide()
 
   def on_ButtonSave_clicked(self, *args):
-    pass
+    save = self.builder.get_object("FileChooser")
+    save.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+    button = self.builder.get_object("FCButtonOK")
+    button.set_label("Save")
+    save.run()
+    save.hide()
+    pb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, has_alpha=False,
+                        bits_per_sample=8, width=self.width, height=self.height)
+    pb.get_from_drawable(self.pixmap, self.pixmap.get_colormap(),
+                         0, 0, 0, 0, -1, -1)
+    pb.save(save.get_filename(),"png")
 
   def on_ButtonPrint_clicked(self, *args):
     pass
